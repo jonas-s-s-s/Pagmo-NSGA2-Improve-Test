@@ -15,7 +15,7 @@ git submodule update --init --recursive
   - ZDT
   - DTLZ
 
-- Population size is 100, generation count is 500, as set in nsga2Test.h
+- Population size is 100, generation count is 3500, as set in nsga2Test.h
 
 # NSGA II
 

@@ -5,7 +5,7 @@ int main(int argc, char* argv[])
 	nsga2Test::run_nsga2(nsga2Test::run_zdt);
 
 	// "Deb, Thiele, Laumanns and Zitzler" - "box-constrained continuous n-dimensional multi-objective problems"
-	nsga2Test::run_nsga2(nsga2Test::run_dtlz);
+	//nsga2Test::run_nsga2(nsga2Test::run_dtlz);
 
     return 0;
 }

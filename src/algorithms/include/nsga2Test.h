@@ -4,7 +4,7 @@
 
 namespace nsga2Test
 {
-    inline constexpr int GEN_COUNT = 500;
+    inline constexpr int GEN_COUNT = 3500;
     inline constexpr int POPULATION_SIZE = 100;
 
     /*
