@@ -24,9 +24,9 @@ void nsga2Test::run_algorithm_on_problem(const pagmo::problem& problem, const pa
     pop = algorithm.evolve(pop);
 
     // Output the population
-    std::cout << "Best 5 individual: \n";
+    //std::cout << "Best 5 individual: \n";
     const auto pop_decision_vectors = pop.get_x();
-    const auto sorted_indexes = pagmo::sort_population_mo(pop_decision_vectors);
+    /*const auto sorted_indexes = pagmo::sort_population_mo(pop_decision_vectors);
     for (int i = 0; i < 5 && i < sorted_indexes.size(); ++i)
     {
         const auto individual = pop_decision_vectors.at(sorted_indexes.at(i));
@@ -36,7 +36,7 @@ void nsga2Test::run_algorithm_on_problem(const pagmo::problem& problem, const pa
             std::cout << val << ", ";
         }
         std::cout << "]" << std::endl;
-    }
+    }*/
 }
 
 
