@@ -1,0 +1,48 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "pagmo-NSGA2-test-Debug",
+      "generator": "Ninja",
+      "binaryDir": "build_Debug",
+      "environment": {
+        "BOOST_PATH": "C:/local/boost_1_89_0/lib64-msvc-14.3/cmake/Boost-1.89.0"
+      },
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "$env{BOOST_PATH}",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "pagmo-NSGA2-test-RelWithDebInfo",
+      "generator": "Ninja",
+      "binaryDir": "build_RelWithDebInfo",
+      "environment": {
+        "BOOST_PATH": "C:/local/boost_1_89_0/lib64-msvc-14.3/cmake/Boost-1.89.0"
+      },
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "$env{BOOST_PATH}",
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "pagmo-NSGA2-test: Debug",
+      "displayName": "Build pagmo-NSGA2-test",
+      "configurePreset": "pagmo-NSGA2-test-Debug",
+      "jobs": 9
+    },
+    {
+      "name": "pagmo-NSGA2-test: RelWithDebInfo",
+      "displayName": "Build pagmo-NSGA2-test",
+      "configurePreset": "pagmo-NSGA2-test-RelWithDebInfo",
+      "jobs": 9
+    }
+  ]
+}
