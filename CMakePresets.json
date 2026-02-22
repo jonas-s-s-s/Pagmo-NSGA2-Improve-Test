@@ -29,6 +29,18 @@
         "CMAKE_PREFIX_PATH": "$env{BOOST_PATH}",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }
+    },
+    {
+      "name": "pagmo-NSGA2-test-Release",
+      "generator": "Ninja",
+      "binaryDir": "build_Release",
+      "environment": {
+        "BOOST_PATH": "C:/local/boost_1_89_0/lib64-msvc-14.3/cmake/Boost-1.89.0"
+      },
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "$env{BOOST_PATH}",
+        "CMAKE_BUILD_TYPE": "Release"
+      }
     }
   ],
   "buildPresets": [
@@ -42,6 +54,12 @@
       "name": "pagmo-NSGA2-test: RelWithDebInfo",
       "displayName": "Build pagmo-NSGA2-test",
       "configurePreset": "pagmo-NSGA2-test-RelWithDebInfo",
+      "jobs": 9
+    },
+    {
+      "name": "pagmo-NSGA2-test: Release",
+      "displayName": "Build pagmo-NSGA2-test",
+      "configurePreset": "pagmo-NSGA2-test-Release",
       "jobs": 9
     }
   ]

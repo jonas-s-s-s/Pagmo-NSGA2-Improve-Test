@@ -32,3 +32,6 @@
 *.app
 /.vs
 /build_RelWithDebInfo
+/build_Release
+/out
+/.idea
