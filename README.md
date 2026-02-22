@@ -218,7 +218,7 @@ void fast_non_dominated_sorting_buffered(const std::vector<vector_double> &point
 # Other memory allocations
 
 - There are several vectors defined elsewhere, mainly inside NSGA2's `evolve()` function
-- An attempt was made to move as much these definitions outside NSGA2's loop, however no noticeable improvement was measured
+- An attempt was made to move as much of these definitions outside of NSGA2's loop, however no noticeable improvement was measured
 - See commit history for details
 
 # Remaining bottlenecks
