@@ -61,8 +61,8 @@ inline bool greater_than_f(T a, T b)
 - The functions `less_than_f` and `greater_than_f` are important to the Pagmo library because the default behavior of IEEE 754 logical operations on NaN is to always return false:
   ![img.png](docs/img_3.png)
 - https://stackoverflow.com/questions/71224184/ieee-754-floating-point-comparisons-with-special-cases
-- Pagmo implements their own version of these operators, to make sure that for example a valid double is always bigger than
-`NaN`, we can see that the pareto dominance function it ensures that an item which contains `NaN` won't "dominate" item that contains only valid numbers.
+- Pagmo implements their own version of these operators to make sure that for example a valid double is always bigger than
+`NaN`. We can see that in the pareto dominance function it ensures that an item which contains `NaN` won't "dominate" an item that contains only valid numbers.
 
 ## Solution
 - We need to reduce the amount of calls to `std::isnan` as much as possible
