@@ -13,7 +13,6 @@ git submodule update --init --recursive
 - Run CMake target "main"
 - The main function runs the NSGA II algorithm on these test suites:
   - ZDT
-  - DTLZ
 
 - Population size is 100, generation count is 3500, as set in nsga2Test.h
 
