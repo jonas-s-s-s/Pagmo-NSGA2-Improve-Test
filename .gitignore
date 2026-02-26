@@ -35,3 +35,5 @@
 /build_Release
 /out
 /.idea
+/build
+/build_Debug

@@ -1,6 +1,14 @@
 # Pagmo-NSGA2-Improve-Test
 
-# Initialisation
+This repository contains an example program for profiling NSGA2 from the Pagmo library.
+
+As described below, it's possible to improve the execution time of the original implementation by as much as 50% (MSVC) or anywhere from 15% to 20% when using other compilers.
+
+All changes that were made to the library can be viewed in this repository: https://github.com/jonas-s-s-s/pagmo2 
+
+# NSGA2 Test Suite
+
+## Initialization
 
 After cloning, initialize git submodules by:
 
@@ -8,7 +16,7 @@ After cloning, initialize git submodules by:
 git submodule update --init --recursive
 ```
 
-# Running the test
+## Running the test
 
 - Run CMake target "main"
 - The main function runs the NSGA II algorithm on these test suites:
@@ -16,7 +24,10 @@ git submodule update --init --recursive
 
 - Population size is 100, generation count is 3500, as set in nsga2Test.h
 
-# Performance Analysis
+
+# Initial Performance Analysis (MSVC)
+
+Pagmo's implementation of the NSGA2 algorithm is unreasonably slow when compiled with MSVC, this section explains the core causes. 
 
 ## The std::isnan problem
 
@@ -68,12 +79,12 @@ inline bool greater_than_f(T a, T b)
 - How? For example the C++20 spaceship operator is useful for this purpose, because it returns an instance of `std::partial_ordering` 
   - https://en.cppreference.com/w/cpp/utility/compare/partial_ordering.html
 - If one of the operands is `NaN` it causes std::partial_ordering::unordered to be returned
-- See commit history for how this was implemented
-- This change alone resulted in a **30% performance increase**, reducing the execution time **from 33.9 seconds to 23.61 seconds**
+- See [commit history](https://github.com/jonas-s-s-s/pagmo2/commit/078593d55f011260863198f5622c2cb82110297a) for how this was implemented
+- This change alone results in a **30% performance increase**, reducing the execution time **from 33.9 seconds to 23.61 seconds**
 
 ![img.png](docs/img_4.png)
 
-# Significant function call overhead in hot path loops
+## Significant function call overhead in hot path loops
 
 - The function `pareto_dominance` is **not declared as inline**
 - This turns out to be another cause of significant performance degradation, especially due to the for loop in `fast_non_dominated_sorting()`
@@ -81,7 +92,7 @@ inline bool greater_than_f(T a, T b)
 
 ![img.png](docs/img_5.png)
 
-# Possible further optimization of pareto_dominance()
+## Possible further optimization of pareto_dominance()
 
 - This functions calls both `greater_than_f` and `less_than_f` in a loop, which means that we could optimize it further by entirely removing these calls and writing custom logic using the spaceship operator directly
 - This could prevent a second evaluation of the spaceship operator by `less_than_f`, however in practice it didn't cause any measurable performance improvements
@@ -138,7 +149,7 @@ bool pareto_dominance(const vector_double &obj1, const vector_double &obj2)
 }
 ```
 
-# Vectors allocating memory in hot path functions
+## Vectors allocating memory in hot path functions
 
 - The function `fast_non_dominated_sorting` has several vectors defined as automatic (on-stack) variables:
 
@@ -214,13 +225,13 @@ void fast_non_dominated_sorting_buffered(const std::vector<vector_double> &point
 
 ![img.png](docs/img_6.png)
 
-# Other memory allocations
+## Other memory allocations
 
 - There are several vectors defined elsewhere, mainly inside NSGA2's `evolve()` function
-- An attempt was made to move as much of these definitions outside of NSGA2's loop, however no noticeable improvement was measured
+- An attempt was made to move as many of these definitions outside of NSGA2's loop, however no noticeable improvement was measured
 - See commit history for details
 
-# Remaining bottlenecks
+## Remaining bottlenecks
 - The two remaking bottlenecks of the NSGA2 implementation are:
   - Calls to `std::pow`
   - Various memory copy operations inside NSGA2's evolve loop
@@ -229,49 +240,32 @@ void fast_non_dominated_sorting_buffered(const std::vector<vector_double> &point
 
 ![img.png](docs/img_7.png)
 
-# NSGA II
+# Other compilers
 
-NSGA2 has these following features:
-- **Multi-objective**
-  - Accepts problems with multiple objective functions
-  - Searches for approximate "Pareto front" of optimal solutions, where improving one objective functions worsens another objective function
+- The performed changes (std::isnan optimization, inlining and memory optimizations) were also tested on Clang (Windows) and GCC (Debian), which revealed that their implementation of std::nan is much more efficient than the one that's used in MSVC's runtime library. 
+- The performance gain is therefore lower, yet still noticeable.
 
-- **Unconstrained**
-  - Algorithm designed for unconstrained problems
-  - So for example having constraint expressions like: $e(x) < 0$, where $x$ is an individual of the population are not supported
+## Clang
 
-- **Integer programming**
-  - Supports problems where individual of the population consists of discrete integer values, instead of vectors of double
+The execution times are:
 
-![img.png](docs/img.png)
+- With original code: **21.622 seconds**
+- After optimization: **18.669 seconds**
 
-## NSGA II Steps
+Which is an improvement of 13.7%.
 
-1. **Initialize**  
-   Generate population $P_0$ of size $N$ and evaluate objectives
+![img.png](docs/img_8.png)
 
-2. **Non-dominated sorting**  
-   Split $P_t$ into Pareto fronts $F_1, F_2, \dots$ by dominance rank
+## GCC
 
-3. **Crowding distance**  
-   Compute crowding distance within each front to preserve diversity
+The execution times are:
 
-4. **Selection**  
-   Binary tournament:
-    - Prefer lower rank
-    - If equal rank, prefer higher crowding distance
+- With original code: **12.416 seconds**
+- After optimization: **10.496 seconds**
 
-5. **Variation**  
-   - Apply crossover and mutation to create offspring $Q_t$ (size $N$)
-   - Evaluate $Q_t$
+Which is an improvement of 15.5%.
 
-6. **Elitist merge**  
-   - Form $R_t = P_t \cup Q_t$ (size $2N$)
-   - Sort $R_t$ into fronts
-
-7. **Next generation**  
-   - Fill $P_{t+1}$ with best fronts
-   - If a front overflows, select by descending crowding distance
-
-8. **Repeat**  
-   Stop when termination criterion is met
+Flame graph before optimization:
+![GCC BEFORE.svg](./docs/GCC%20BEFORE.svg)
+Flame graph after optimization:
+![GCC BEFORE.svg](./docs/GCC%20AFTER.svg)
