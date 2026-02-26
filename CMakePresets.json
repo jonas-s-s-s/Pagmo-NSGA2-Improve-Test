@@ -1,66 +1,72 @@
 {
-  "version": 6,
+  "version": 3,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 23,
+    "minor": 21,
     "patch": 0
   },
   "configurePresets": [
     {
-      "name": "pagmo-NSGA2-test-Debug",
+      "name": "clang-cl-debug",
+      "hidden": false,
       "generator": "Ninja",
-      "binaryDir": "build_Debug",
-      "environment": {
-        "BOOST_PATH": "C:/local/boost_1_89_0/lib64-msvc-14.3/cmake/Boost-1.89.0"
-      },
+      "description": "Clang-cl Debug build",
+      "binaryDir": "${sourceDir}/build_Debug",
       "cacheVariables": {
-        "CMAKE_PREFIX_PATH": "$env{BOOST_PATH}",
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_C_COMPILER": "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+        "CMAKE_CXX_COMPILER": "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLLDebug",
+        "CMAKE_PREFIX_PATH": "C:\\local\\boost_llvm\\boost-1.90.0_cmake\\lib\\cmake\\Boost-1.90.0"
       }
     },
     {
-      "name": "pagmo-NSGA2-test-RelWithDebInfo",
+      "name": "clang-cl-release",
+      "hidden": false,
       "generator": "Ninja",
-      "binaryDir": "build_RelWithDebInfo",
-      "environment": {
-        "BOOST_PATH": "C:/local/boost_1_89_0/lib64-msvc-14.3/cmake/Boost-1.89.0"
-      },
+      "description": "Clang-cl Release build",
+      "binaryDir": "${sourceDir}/build_Release",
       "cacheVariables": {
-        "CMAKE_PREFIX_PATH": "$env{BOOST_PATH}",
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+        "CMAKE_C_COMPILER": "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+        "CMAKE_CXX_COMPILER": "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLL",
+        "CMAKE_PREFIX_PATH": "C:\\local\\boost_llvm\\boost-1.90.0_cmake\\lib\\cmake\\Boost-1.90.0"
       }
     },
     {
-      "name": "pagmo-NSGA2-test-Release",
+      "name": "clang-cl-relwithdebinfo",
+      "hidden": false,
       "generator": "Ninja",
-      "binaryDir": "build_Release",
-      "environment": {
-        "BOOST_PATH": "C:/local/boost_1_89_0/lib64-msvc-14.3/cmake/Boost-1.89.0"
-      },
+      "description": "Clang-cl Release with Debug Info build",
+      "binaryDir": "${sourceDir}/build_RelWithDebInfo",
       "cacheVariables": {
-        "CMAKE_PREFIX_PATH": "$env{BOOST_PATH}",
-        "CMAKE_BUILD_TYPE": "Release"
+        "CMAKE_C_COMPILER": "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+        "CMAKE_CXX_COMPILER": "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLL",
+        "CMAKE_PREFIX_PATH": "C:\\local\\boost_llvm\\boost-1.90.0_cmake\\lib\\cmake\\Boost-1.90.0"
       }
     }
   ],
   "buildPresets": [
     {
-      "name": "pagmo-NSGA2-test: Debug",
-      "displayName": "Build pagmo-NSGA2-test",
-      "configurePreset": "pagmo-NSGA2-test-Debug",
-      "jobs": 9
+      "name": "build-debug",
+      "configurePreset": "clang-cl-debug",
+      "description": "Build Debug configuration",
+      "targets": []
     },
     {
-      "name": "pagmo-NSGA2-test: RelWithDebInfo",
-      "displayName": "Build pagmo-NSGA2-test",
-      "configurePreset": "pagmo-NSGA2-test-RelWithDebInfo",
-      "jobs": 9
+      "name": "build-release",
+      "configurePreset": "clang-cl-release",
+      "description": "Build Release configuration",
+      "targets": []
     },
     {
-      "name": "pagmo-NSGA2-test: Release",
-      "displayName": "Build pagmo-NSGA2-test",
-      "configurePreset": "pagmo-NSGA2-test-Release",
-      "jobs": 9
+      "name": "build-relwithdebinfo",
+      "configurePreset": "clang-cl-relwithdebinfo",
+      "description": "Build Release with Debug Info configuration",
+      "targets": []
     }
   ]
 }
