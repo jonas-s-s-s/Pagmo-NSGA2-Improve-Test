@@ -269,3 +269,50 @@ Flame graph before optimization:
 ![GCC BEFORE.svg](./docs/GCC%20BEFORE.svg)
 Flame graph after optimization:
 ![GCC BEFORE.svg](./docs/GCC%20AFTER.svg)
+
+# Clarification on the spaceship operator
+
+[ISO/IEC 14882:2020](https://isocpp.org/files/papers/N4910.pdf) §7.6.9 \[expr.spaceship\] specifies that:
+
+> Otherwise, the operands have floating-point type, and the result is of type std::partial_ordering. The expression a <=> b yields std::partial_ordering::less if **a is less than b**, std::partial_ordering::greater if **a is greater than b**, std::partial_ordering::equivalent if **a is equivalent to b**, and std::partial_ordering::unordered **otherwise**.
+
+This means that if either `a` or `b` in the expression `a <=> b` are equal to `NaN`, the result must always be  `std::partial_ordering::unordered`, because in that case `a < b`, `a > b`, and `a == b` are **all false**.
+
+This can be verified by compiling the following code using a C++20 compliant compiler:
+
+```cpp
+#include <compare>
+#include <iostream>
+#include <limits>
+
+int main() {
+    double nan1 = std::numeric_limits<double>::quiet_NaN();
+    double nan2 = std::numeric_limits<double>::quiet_NaN();
+    double value = 1.0;
+
+    auto check = [](double a, double b) {
+        auto result = a <=> b;
+        return result == std::partial_ordering::unordered;
+    };
+    
+    std::cout << std::boolalpha;
+    std::cout << "nan1 <=> nan1 unordered: " << check(nan1, nan1) << std::endl;
+    std::cout << "nan1 <=> nan2 unordered: " << check(nan1, nan2) << std::endl;
+    std::cout << "nan1 <=> value unordered: " << check(nan1, value) << std::endl;
+    std::cout << "value <=> nan1 unordered: " << check(value, nan1) << std::endl;
+
+    return 0;
+}
+```
+
+The output when executed is:
+
+```
+nan1 <=> nan1 unordered: true
+nan1 <=> nan2 unordered: true
+nan1 <=> value unordered: true
+value <=> nan1 unordered: true
+```
+
+Meaning that the spaceship operator can be safely used to detect if either of the operands is equal to `NaN`.
+
